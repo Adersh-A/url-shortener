@@ -1,4 +1,4 @@
-package com.myprojects.urlshortener.model;
+package com.myprojects.urlshortener.models;
 
 public enum Role {
     ROLE_USER, ROLE_ADMIN

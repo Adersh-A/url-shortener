@@ -10,6 +10,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: none
     show-sql: true

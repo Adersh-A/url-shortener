@@ -1,6 +1,6 @@
 package com.myprojects.urlshortener.entities;
 
-import com.myprojects.urlshortener.model.Role;
+import com.myprojects.urlshortener.models.Role;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
