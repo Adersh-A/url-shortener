@@ -1,6 +1,5 @@
 package com.myprojects.urlshortener.services;
 
-import com.myprojects.urlshortener.entities.ShortUrl;
 import com.myprojects.urlshortener.models.ShortUrlDto;
 import com.myprojects.urlshortener.repositories.ShortUrlRepository;
 import org.springframework.stereotype.Service;
