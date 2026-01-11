@@ -19,7 +19,6 @@ spring:
         jdbc:
           time_zone: Asia/Kolkata
 
-#logging:
-#  level:
-#    org.flywaydb: DEBUG
-#    root: INFO
+logging:
+  level:
+    root: INFO
