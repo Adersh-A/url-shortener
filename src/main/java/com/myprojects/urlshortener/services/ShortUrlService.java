@@ -15,6 +15,7 @@ import static java.time.temporal.ChronoUnit.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -60,6 +61,21 @@ public class ShortUrlService {
         shortUrl.setCreatedAt(Instant.now());
         shortUrlRepository.save(shortUrl);
         return entityMapper.toShortUrlDto(shortUrl);
+    }
+
+    @Transactional
+    public Optional<ShortUrlDto> accessShortUrl(String shortKey) {
+        Optional<ShortUrl> shortUrlOptional = shortUrlRepository.findByShortKey(shortKey);
+        if(shortUrlOptional.isEmpty()) {
+            return Optional.empty();
+        }
+        ShortUrl shortUrl = shortUrlOptional.get();
+        if(shortUrl.getExpiresAt() != null && shortUrl.getExpiresAt().isBefore(Instant.now())) {
+            return Optional.empty();
+        }
+        shortUrl.setClickCount(shortUrl.getClickCount()+1);
+        shortUrlRepository.save(shortUrl);
+        return shortUrlOptional.map(entityMapper::toShortUrlDto);
     }
 
     private String generateUniqueShortKey() {
