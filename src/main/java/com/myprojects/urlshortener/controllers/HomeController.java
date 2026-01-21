@@ -6,6 +6,7 @@ import com.myprojects.urlshortener.exceptions.ShortUrlNotFoundException;
 import com.myprojects.urlshortener.models.CreateShortUrlCmd;
 import com.myprojects.urlshortener.models.ShortUrlDto;
 import com.myprojects.urlshortener.services.ShortUrlService;
+import com.myprojects.urlshortener.utils.SecurityUtils;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,11 +25,14 @@ public class HomeController {
 
     private final ShortUrlService shortUrlService;
     private final ApplicationProperties applicationProperties;
+    private final SecurityUtils securityUtils;
 
     public HomeController(ShortUrlService shortUrlService,
-                          ApplicationProperties applicationProperties) {
+                          ApplicationProperties applicationProperties,
+                          SecurityUtils securityUtils) {
         this.shortUrlService = shortUrlService;
         this.applicationProperties = applicationProperties;
+        this.securityUtils = securityUtils;
     }
 
     @GetMapping("/")
@@ -36,7 +40,7 @@ public class HomeController {
         List<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls();
         model.addAttribute("shortUrls", shortUrls);
         model.addAttribute("baseUrl", applicationProperties.baseUrl());
-        model.addAttribute("createShortUrlForm", new CreateShortUrlForm(""));
+        model.addAttribute("createShortUrlForm", new CreateShortUrlForm("",false,null));
         return "index";
     }
 
@@ -53,7 +57,12 @@ public class HomeController {
         }
 
         try {
-            CreateShortUrlCmd cmd = new CreateShortUrlCmd(form.originalUrl());
+            Long userId = securityUtils.getCurrentUserId();
+            CreateShortUrlCmd cmd = new CreateShortUrlCmd(
+                    form.originalUrl(),
+                    form.isPrivate(),
+                    form.expirationInDays(),
+                    userId);
             var shortUrlDto = shortUrlService.createShortUrl(cmd);
             redirectAttributes.addFlashAttribute("successMessage", "Short URL created successfully "+
                     applicationProperties.baseUrl()+"/s/"+shortUrlDto.shortKey());
@@ -66,7 +75,8 @@ public class HomeController {
 
     @GetMapping("/s/{shortKey}")
     String redirectToOriginalUrl(@PathVariable String shortKey) {
-        Optional<ShortUrlDto> shortUrlDtoOptional = shortUrlService.accessShortUrl(shortKey);
+        Long userId = securityUtils.getCurrentUserId();
+        Optional<ShortUrlDto> shortUrlDtoOptional = shortUrlService.accessShortUrl(shortKey, userId);
         if(shortUrlDtoOptional.isEmpty()) {
             throw new ShortUrlNotFoundException("Invalid short key: "+shortKey);
         }
