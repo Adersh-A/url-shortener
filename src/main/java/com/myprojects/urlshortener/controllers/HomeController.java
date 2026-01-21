@@ -25,7 +25,8 @@ public class HomeController {
     private final ShortUrlService shortUrlService;
     private final ApplicationProperties applicationProperties;
 
-    public HomeController(ShortUrlService shortUrlService, ApplicationProperties applicationProperties) {
+    public HomeController(ShortUrlService shortUrlService,
+                          ApplicationProperties applicationProperties) {
         this.shortUrlService = shortUrlService;
         this.applicationProperties = applicationProperties;
     }
@@ -71,6 +72,11 @@ public class HomeController {
         }
         ShortUrlDto shortUrlDto = shortUrlDtoOptional.get();
         return "redirect:"+shortUrlDto.originalUrl();
+    }
+
+    @GetMapping("/login")
+    String loginForm() {
+        return "login";
     }
 
 }
