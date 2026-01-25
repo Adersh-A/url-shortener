@@ -19,6 +19,13 @@ spring:
         jdbc:
           time_zone: Asia/Kolkata
 
+app:
+  base-url: http://localhost:8080
+  default-expiry-in-days: 30
+  validate-original-url: true
+  page-size: 5
+
+
 logging:
   level:
     root: INFO
