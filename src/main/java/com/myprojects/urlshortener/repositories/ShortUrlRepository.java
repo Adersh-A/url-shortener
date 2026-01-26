@@ -16,4 +16,7 @@ public interface ShortUrlRepository extends JpaRepository<ShortUrl, Long> {
     boolean existsByShortKey(String shortKey);
 
     Optional<ShortUrl> findByShortKey(String shortKey);
+
+    @Query("select u from ShortUrl u left join fetch u.createdBy")
+    Page<ShortUrl> findAllShortUrls(Pageable pageable);
 }
