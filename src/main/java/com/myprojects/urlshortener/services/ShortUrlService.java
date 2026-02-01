@@ -64,6 +64,13 @@ public class ShortUrlService {
         return PagedResult.from(shortUrlsPage);
     }
 
+    public PagedResult<ShortUrlDto> getUserShortUrls(Long userId, int page, int pageSize) {
+        Pageable pageable = getPageable(page, pageSize);
+        var shortUrlsPage = shortUrlRepository.findByCreatedById(userId, pageable)
+                .map(entityMapper::toShortUrlDto);
+        return PagedResult.from(shortUrlsPage);
+    }
+
     @Transactional
     public ShortUrlDto createShortUrl(CreateShortUrlCmd cmd) {
         if (applicationProperties.validateOriginalUrl()) {
@@ -108,6 +115,13 @@ public class ShortUrlService {
         shortUrl.setClickCount(shortUrl.getClickCount() + 1);
         shortUrlRepository.save(shortUrl);
         return shortUrlOptional.map(entityMapper::toShortUrlDto);
+    }
+
+    @Transactional
+    public void deleteUserShortUrls(List<Long> ids, Long userId) {
+        if (ids != null && !ids.isEmpty() && userId != null) {
+            shortUrlRepository.deleteByIdInAndCreatedById(ids, userId);
+        }
     }
 
     private String generateUniqueShortKey() {
