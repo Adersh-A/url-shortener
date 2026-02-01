@@ -114,11 +114,6 @@ public class HomeController {
         return "redirect:"+shortUrlDto.originalUrl();
     }
 
-    @GetMapping("/login")
-    String loginForm() {
-        return "login";
-    }
-
     private void addShortUrlsDataToModel(Model model, int pageNo) {
         PagedResult<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls(pageNo, applicationProperties.pageSize());
         model.addAttribute("shortUrls", shortUrls);
