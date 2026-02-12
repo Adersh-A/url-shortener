@@ -1,45 +1,75 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>URL Shortener</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+
+    <!-- Your styles -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
+
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+<!-- Top Navigation -->
+
+<nav class="navbar navbar-expand-lg app-navbar fixed-top">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/}">URL Shortener</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- Brand -->
+        <a class="navbar-brand app-brand" th:href="@{/}"> URL Shortener </a>
+
+        <!-- Mobile toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Left nav -->
             <ul class="navbar-nav me-auto">
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" href="#" th:href="@{/my-urls}">My URLs</a>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"> Home </a>
                 </li>
+
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/my-urls}"> My URLs </a>
+                </li>
+
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" href="#" th:href="@{/admin/dashboard}">Admin Dashboard</a>
+                    <a class="nav-link" th:href="@{/admin/dashboard}"> Admin </a>
                 </li>
             </ul>
-            <ul class="navbar-nav">
+
+            <!-- Right nav -->
+            <ul class="navbar-nav align-items-center gap-2">
                 <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" href="#" th:href="@{/login}">Login</a>
+                    <a class="btn btn-sm btn-outline-primary" th:href="@{/login}">
+                        Login
+                    </a>
                 </li>
+
                 <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" href="#" th:href="@{/register}">Register</a>
+                    <a class="btn btn-sm btn-primary" th:href="@{/register}">
+                        Register
+                    </a>
                 </li>
+
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <span class="nav-link">Welcome <span sec:authentication="name"></span></span>
+                        <span class="nav-link user-label">
+                            <span sec:authentication="name"></span>
+                        </span>
                 </li>
+
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form th:action="@{/logout}" method="post">
-                        <button type="submit" class="nav-link">Logout</button>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            Logout
+                        </button>
                     </form>
                 </li>
             </ul>
@@ -47,31 +77,33 @@
     </div>
 </nav>
 
-<div class="container">
+<!-- Main Content -->
 
-    <div th:if="${successMessage}"
-         class="alert alert-success alert-dismissible fade show mt-3"
-         role="alert">
-        <span th:text="${successMessage}"></span>
-        <button type="button" class="btn-close"
-                data-bs-dismiss="alert" aria-label="Close">
-        </button>
-    </div>
-    <div th:if="${errorMessage}"
-         class="alert alert-danger alert-dismissible fade show mt-3"
-         role="alert">
-        <span th:text="${errorMessage}"></span>
-        <button type="button" class="btn-close"
-                data-bs-dismiss="alert" aria-label="Close">
-        </button>
-    </div>
+<main class="app-main">
+    <div class="container app-container">
+        <!-- Success Message -->
 
-    <div layout:fragment="content">
-        <!-- Your Page Content Here -->
-    </div>
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+            <span th:text="${successMessage}"></span>
 
-</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Error Message -->
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+            <span th:text="${errorMessage}"></span>
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Page Content -->
+
+        <div layout:fragment="content"></div>
+    </div>
+</main>
 
 <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
 </body>
+
 </html>
